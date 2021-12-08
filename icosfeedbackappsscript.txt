@@ -1,0 +1,20 @@
+function Drawshape(){
+  var widget = HtmlService
+    .createHtmlOutputFromFile("icoscompact.html");
+  widget.setWidth(500);
+  widget.setHeight(500);
+  SpreadsheetApp.getUi().showModalDialog(widget, " ");
+}
+
+function Recordresponse(form){
+  var row = [form.comment];
+  var ss = SpreadsheetApp.openById("XXXXX");
+  SpreadsheetApp.setActiveSpreadsheet(ss);
+  ss.getActiveSheet().appendRow(row)
+  MailApp.sendEmail({
+    to: "aaron.tan.zh@gmail.com",
+    subject: "A coy PS feedback:"+row,
+    htmlBody: "You received new feedback on the macros.XXXXX"
+  });
+
+}
