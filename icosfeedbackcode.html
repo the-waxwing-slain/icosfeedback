@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html><!-- Plat. Tim. 55b -->
+  <style>
+  textarea {position: fixed;top: 300px;right: 95px;width: 300px;height: 20px;border: 1px solid #555;font-size: 12px;font-family: Arial, Helvetica, sans-serif;
+  transition: height 0.5s ease-in-out;resize:none;}
+  textarea:focus {height: 150px;outline:0;} 
+  textarea::placeholder {font-style: italic;font-size: 12px;font-family: Arial, Helvetica, sans-serif;}
+  input[type=button] {position: fixed;width:70px;top: 457px;right: 95px;height: 20px;border:0;visibility: hidden;opacity: 0;font-weight: bold;background-color:black;color:white;z-index: 2;
+  transition: visibility 2s, opacity 2s, background-color 0.3s, color 0.3s, width 0.3s;}
+  textarea:focus~input[type=button]{visibility:visible;opacity:1}
+  input[type=button]:hover{background-color:#bcbcbc; color:black; width:306px;}
+  #thanks {position: fixed;top: 350px;right: 143px;font-family: Helvetica Neue, Helvetica, sans-serif;font-style: italic;font-weight: bold;}
+  #plane {position: fixed; top: 300px;right: 0px}
+  </style>
+
+  <body onload = "animiso();">
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <canvas id="plane" width="400" height="300"></canvas>
+    <div id="form">
+    <form id="feedbackForm">
+      <textarea rows="4" cols="50" name="comment" form="feedbackForm" placeholder="Talk to the icosahedron."></textarea>
+      <input type="button" value="Submit" onclick="submitForm();">
+    </form> 
+    </div>
+  </body>
+
+  <script>
+    const V1=[200,200,200]; const V2=[250,286.6025,200];const V3=[150,286.6025,200]; const V4=[119.0985,211.02665,257.735];const V5=[200,164.31815,293.4175];const V6=[280.9015,211.02665,257.735];
+    const V7=[280.9015,304.444,293.417];const V8=[200,351.1525,257.7345];const V9=[119.0985,304.444,293.417];const V10=[150,228.8681,351.152];const V11=[250,228.86815,351.152];
+    const V12=[200,315.4705,351.152];const Cen=[200,257.735,275.576];
+    function setfill(ctx,r,g,b,a){r=String(r);g=String(g);b=String(b);a=String(a);ctx.fillStyle='rgba('+r+','+g+','+b+','+a+')';ctx.fill();}
+    function dtri(ctx,v11,v12,v21,v22,v31,v32){ctx.beginPath(); ctx.moveTo(v11,v12);ctx.lineTo(v21,v22);ctx.lineTo(v31,v32);ctx.lineTo(v11,v12);ctx.stroke();} 
+    function xrot(v,r,cen){var x=v[0];var y=v[1]-cen[1];var z=v[2]-cen[2];var r=r;yr=Math.cos(r)*y-Math.sin(r)*z;zr=Math.sin(r)*y+Math.cos(r)*z;return [x,yr+cen[1],zr+cen[2]];}
+    function yrot(v,r,cen){var x=v[0]-cen[0];var y=v[1];var z=v[2]-cen[2];var r=r;xr=Math.cos(r)*x+Math.sin(r)*z;zr=Math.cos(r)*z-Math.sin(r)*x;return [xr+cen[0],y,zr+cen[2]];}
+    function zrot(v,r,cen){var x=v[0]-cen[0];var y=v[1]-cen[1];var z=v[2];var r=r;xr=Math.cos(r)*x-Math.sin(r)*y;yr=Math.sin(r)*x+Math.cos(r)*y;return [xr+cen[0],yr+cen[1],z];}
+    function cproj(x,xc,z,f){return((x-xc)*(f/z)+xc);}function avgz(tri){return(tri[0][2]+tri[1][2]+tri[2][2])/3;}
+    function ciso(ctx,f,vlist,xc,yc,r,g,b,a){var plist=Array.from({length:12});var trisort = Array.from({length:20});sortedtris = Array.from({length:20});
+     for (v=0;v<vlist.length;v++) {plist[v]=[cproj(vlist[v][0],xc,vlist[v][2],f),cproj(vlist[v][1],yc,vlist[v][2],f)];} 
+     var trilist = [[vlist[0],vlist[1],vlist[2]],[vlist[0],vlist[2],vlist[3]],[vlist[0],vlist[3],vlist[4]],[vlist[0],vlist[4],vlist[5]],[vlist[0],vlist[5],vlist[1]],[vlist[1],vlist[5],vlist[6]],
+     [vlist[1],vlist[6],vlist[7]],[vlist[1],vlist[7],vlist[2]],[vlist[2],vlist[7],vlist[8]],[vlist[2],vlist[8],vlist[3]],[vlist[3],vlist[8],vlist[9]],[vlist[3],vlist[4],vlist[9]],
+     [vlist[4],vlist[9],vlist[10]],[vlist[4],vlist[5],vlist[10]],[vlist[5],vlist[10],vlist[6]],[vlist[7],vlist[6],vlist[11]],[vlist[10],vlist[9],vlist[11]], [vlist[8],vlist[9],vlist[11]],
+     [vlist[7],vlist[8],vlist[11]],[vlist[6],vlist[10],vlist[11]]];
+     var ptrilist = [[plist[0],plist[1],plist[2]],[plist[0],plist[2],plist[3]],[plist[0],plist[3],plist[4]],[plist[0],plist[4],plist[5]],[plist[0],plist[5],plist[1]],[plist[1],plist[5],plist[6]],
+     [plist[1],plist[6],plist[7]],[plist[1],plist[7],plist[2]],[plist[2],plist[7],plist[8]],[plist[2],plist[8],plist[3]],[plist[3],plist[8],plist[9]],[plist[3],plist[4],plist[9]],
+     [plist[4],plist[9],plist[10]],[plist[4],plist[5],plist[10]],[plist[5],plist[10],plist[6]],[plist[7],plist[6],plist[11]],[plist[10],plist[9],plist[11]],[plist[8],plist[9],plist[11]],
+     [plist[7],plist[8],plist[11]],[plist[6],plist[10],plist[11]]];
+     for (z=0;z<20;z++){trisort[z]=[z,avgz(trilist[z])];};trisort.sort(function(a,b){return b[1]-a[1];});for (z=0;z<20;z++){sortedtris[z] = ptrilist[trisort[z][0]]}
+     for (d=0;d<20;d++){dtri(ctx,sortedtris[d][0][0],sortedtris[d][0][1],sortedtris[d][1][0],sortedtris[d][1][1],sortedtris[d][2][0],sortedtris[d][2][1]);setfill(ctx,r,g,b,a);}}
+    var timer=null;var frequency=0.02;var i=0;var x=0;const constv=[V1,V2,V3,V4,V5,V6,V7,V8,V9,V10,V11,V12];var varv=Array.from({length:12});
+    function animiso(){var cv=document.getElementById('canvas');if(cv.getContext){var cx=cv.getContext('2d');}cx.translate(45,-60);timer=setInterval(frame,7);cx.strokeStyle='black';cx.lineWidth=0.4
+    function frame(){cx.clearRect(0,0,cv.width,cv.height);if(i> 3140){i=0};i+=0.05;if(x>6.283){x=0};x+=0.05;for(j=0;j<varv.length;j++){varv[j]=constv[j]};
+    for (j=0;j<varv.length;j++){varv[j]=yrot(varv[j],x,Cen)};r=Math.sin(frequency*i+0)*100+105;g=Math.sin(frequency*i+2)*100+105;b=Math.sin(frequency*i+4)*100+105;
+    ciso(cx,190,varv,195,190,r,g,b,0.8); cx.fillStyle='black';cx.font = 'bold italic 15px Helvetica Neue';cx.fillText("Bugs? Requests? Submit feedback below.",50,110);}
+    }
+
+    var timer=null;
+    var frequency = 0.02;
+    var x1 = 0; var i1 = 0; var t = 0; var k = 0; var y = 0; var r1 = 0; var m = 0; var a1 = -1.5;
+    const Root2 = 1.414236
+
+    function animfold1(s0,s1,h,l){
+      timer = setInterval(frame,1); var cv=document.getElementById('plane');
+      if(cv.getContext){var cx=cv.getContext('2d');}; cx.strokeStyle = 'black'; cx.lineWidth = 0.8
+      
+      function frame(){t+=1;
+        if (t<10) {
+        cx.clearRect(0, 0, canvas.width, canvas.height);
+        s0=s0+t*1.20; s1=s1+t*1.25; l=l-t; h=h-t*0.25
+        cx.beginPath(); cx.moveTo(s0,s1);cx.lineTo(l,s1);cx.lineTo(l,h);cx.lineTo(s0,h);cx.lineTo(s0,s1);cx.stroke();
+				[console.log(s0,s1,l,h)]} 
+        const H = (h+s1)*0.5;
+        const V1=[s0+l-H,s1]; const V2=[l,s1]; const V3=[l,H]; const V4=[s0+l-(H*(Root2+1)),s1]; const V5=[s0+l-H,s1]; const V6=[l,H]; const V7=[s0+l-H,h]; const V8=[l,h]; const V9 = [l,H];
+        const V10=[s0+l-(H*0.85*(Root2+1)),h]; const V11=[s0+l-H,h]; const V12=[l,H];const V13 = [s0+l-H*Root2,H]; const F = (H-V2[1])/10; const Cen = [l,H,0] 
+
+        if (t>=10 && t<22){       	
+          if (V2[1]+x1>=H){f=0;return}; x1+=F; cx.clearRect(0, 0, canvas.width, canvas.height);
+          cx.beginPath(); cx.moveTo(s0,s1);cx.lineTo(V1[0],V1[1]);cx.lineTo(V3[0],V3[1]);cx.lineTo(l,h);cx.lineTo(s0,h);cx.lineTo(s0,s1);cx.stroke(); 
+          var v1=V1; var v2=V2; var v3=V3; v2 = [v2[0]-x1,v2[1]+x1];
+          dtri(cx,v1[0],v1[1],v2[0],v2[1],v3[0],v3[1]); setfill(cx,255,255,255,1);          
+        
+        } else if (t>=22 && t<37){
+          if (V2[1]+i1>=H){return}; i1+=F; cx.clearRect(0, 0, canvas.width, canvas.height);
+          cx.beginPath(); cx.moveTo(s0,s1);cx.lineTo(V4[0],V4[1]);cx.lineTo(V3[0],V3[1]);cx.lineTo(l,h);cx.lineTo(s0,h);cx.lineTo(s0,s1);cx.stroke();
+          var v1=V4; var v2=V5; var v3=V3; v2 = [v2[0]-i1*(Root2-1),v2[1]+i1]; 
+          dtri(cx,v1[0],v1[1],v2[0],v2[1],v3[0],v3[1]);setfill(cx,255,255,255,1); dtri(cx,s0+l-H,s1+H-(H*(H-i1*0.75))/(H+i1*0.95*(Root2-1)),s0+l-H,H,V3[0],V3[1]);setfill(cx,255,255,255,1);
+
+        } else if (t>=37 && t<52){  
+          if (V2[1]+k>=H){return}; k+=F; cx.clearRect(0, 0, canvas.width, canvas.height);
+          dtri(cx,V4[0],V4[1],s0+l-H*Root2,H,V3[0],V3[1]);setfill(cx,255,255,255,1); 
+          cx.beginPath(); cx.moveTo(s0,s1);cx.lineTo(V4[0],V4[1]);cx.lineTo(V3[0],V3[1]);cx.lineTo(V7[0],V7[1]);cx.lineTo(s0,h);cx.lineTo(s0,s1);cx.stroke(); 
+          var v1=V7; var v2=V8; var v3=V9; v2 = [v2[0]-k,v2[1]-k];
+          dtri(cx,v1[0],v1[1],v2[0],v2[1],v3[0],v3[1]); setfill(cx,255,255,255,1);
+
+       } else if (t>=52 && t<67){
+          if (V2[1]+y>=H){return}; y+=F; cx.clearRect(0, 0, canvas.width, canvas.height);
+          dtri(cx,V4[0],V4[1],s0+l-H*Root2,H,V3[0],V3[1]);setfill(cx,255,255,255,1);
+       		cx.beginPath(); cx.moveTo(s0,s1);cx.lineTo(V4[0],V4[1]);cx.lineTo(V3[0],V3[1]);cx.lineTo(V10[0],V10[1]);cx.lineTo(s0,h);cx.lineTo(s0,s1);cx.stroke();
+       		var v1=V10; var v2=V11; var v3=V12; v2 = [v2[0]-y*(Root2-1),v2[1]-y]; dtri(cx,v1[0],v1[1],v2[0],v2[1],v3[0],v3[1]); setfill(cx,255,255,255,1);
+          dtri(cx,s0+l-H,h-(H-(H*(H-y*0.75))/(H+y*0.95*(Root2-1))),s0+l-H,H,V3[0],V3[1]);setfill(cx,255,255,255,1);
+       
+       } else if (t>=67 && t<120){df = true;
+         if (r1>1){df=false};if (df == true){r1+=0.05}; cx.clearRect(0, 0, canvas.width, canvas.height);
+         var v4 = V4; var v10 = V10; var v3=V3; var v13=V13; var v14=[s0,s1]; var v15=[s0,h]; var v16=[s0,H]; var varv = [v4,v10,v3,v13,v14,v15,v16];     
+         for (v=0;v<varv.length;v++) {varv[v]=[varv[v][0],varv[v][1],0]}; for (v=0;v<varv.length;v++) {varv[v]=xrot(varv[v],r1,Cen)} 
+         var varv2 = [varv[5],varv[6],varv[2],varv[1]];
+         for (v=0;v<varv2.length;v++) {varv2[v]=xrot(varv2[v],r1*0.95,Cen)};for (v=0;v<varv.length;v++) {varv[v]=yrot(varv[v],-r1*0.25,Cen)};
+         for (v=0;v<varv2.length;v++) {varv2[v]=yrot(varv2[v],-r1*0.25,Cen)} 
+       	 dtri(cx,varv[0][0],varv[0][1],varv[3][0],varv[3][1],varv[2][0],varv[2][1]);setfill(cx,255,255,255,1);
+         cx.beginPath(); cx.moveTo(varv[4][0],varv[4][1]);cx.lineTo(varv[0][0],varv[0][1]);cx.lineTo(varv[2][0],varv[2][1]);cx.lineTo(varv[6][0],varv[6][1]);cx.lineTo(varv[4][0],varv[4][1]);
+         cx.stroke();        
+         if (r1<0.85){
+         cx.beginPath();cx.moveTo(varv2[0][0],varv2[0][1]);cx.lineTo(varv2[1][0],varv2[1][1]);cx.lineTo(varv2[2][0],varv2[2][1]);
+         cx.lineTo(varv2[3][0],varv2[3][1]);cx.lineTo(varv2[0][0],varv2[0][1]);cx.stroke();setfill(cx,255,255,255,1);
+         dtri(cx,varv2[3][0],varv2[3][1],varv[3][0],varv[3][1],varv2[2][0],varv2[2][1]);cx.stroke();setfill(cx,255,255,255,1);
+         } else {
+         dtri(cx,varv2[3][0],varv2[3][1],varv[3][0],varv[3][1],varv2[2][0],varv2[2][1]);setfill(cx,255,255,255,1);
+         cx.beginPath();cx.moveTo(varv2[0][0],varv2[0][1]);cx.lineTo(varv2[1][0],varv2[1][1]);cx.lineTo(varv2[2][0],varv2[2][1]);
+         cx.lineTo(varv2[3][0],varv2[3][1]);cx.lineTo(varv2[0][0],varv2[0][1]);cx.stroke();setfill(cx,255,255,255,1); 
+         }
+         if (df==false){cx.clearRect(0, 0, canvas.width, canvas.height); m+=15; a1+=0.15
+         for (v=0;v<varv.length;v++) {varv[v][0]=varv[v][0]+m*a1}; for (v=0;v<varv2.length;v++) {varv2[v][0]=varv2[v][0]+m*a1};
+         dtri(cx,varv[0][0],varv[0][1],varv[3][0],varv[3][1],varv[2][0],varv[2][1]);setfill(cx,255,255,255,1);
+         cx.beginPath(); cx.moveTo(varv[4][0],varv[4][1]);cx.lineTo(varv[0][0],varv[0][1]);cx.lineTo(varv[2][0],varv[2][1]);cx.lineTo(varv[6][0],varv[6][1]);cx.lineTo(varv[4][0],varv[4][1]);
+         cx.stroke(); setfill(cx,255,255,255,1);
+         dtri(cx,varv2[3][0],varv2[3][1],varv[3][0],varv[3][1],varv2[2][0],varv2[2][1]);setfill(cx,255,255,255,1);
+         cx.beginPath();cx.moveTo(varv2[0][0],varv2[0][1]);cx.lineTo(varv2[1][0],varv2[1][1]);cx.lineTo(varv2[2][0],varv2[2][1]);cx.lineTo(varv2[3][0],varv2[3][1]);cx.lineTo(varv2[0][0],varv2[0][1])
+         ;cx.stroke();setfill(cx,255,255,255,1);
+         }
+
+       } else if (t>=120) {
+         cx.clearRect(0, 0, canvas.width, canvas.height);
+         cx.fillStyle='black';cx.font = 'bold italic 15px Helvetica Neue';cx.fillText("Thank you for your feedback.",50,90);
+         return
+       }
+      }
+		}
+
+    function submitForm() {
+      google.script.run.Recordresponse(document.getElementById("feedbackForm"));
+      document.getElementById("form").style.display = "none";
+      animfold1(0,3,157,305);
+    }
+    
+    </script> 
+</html>
