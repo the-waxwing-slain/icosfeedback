@@ -66,8 +66,8 @@
         if (t<10) {
         cx.clearRect(0, 0, canvas.width, canvas.height);
         s0=s0+t*1.20; s1=s1+t*1.25; l=l-t; h=h-t*0.25
-        cx.beginPath(); cx.moveTo(s0,s1);cx.lineTo(l,s1);cx.lineTo(l,h);cx.lineTo(s0,h);cx.lineTo(s0,s1);cx.stroke();
-				[console.log(s0,s1,l,h)]} 
+        cx.beginPath(); cx.moveTo(s0,s1);cx.lineTo(l,s1);cx.lineTo(l,h);cx.lineTo(s0,h);cx.lineTo(s0,s1);cx.stroke();}
+		       
         const H = (h+s1)*0.5;
         const V1=[s0+l-H,s1]; const V2=[l,s1]; const V3=[l,H]; const V4=[s0+l-(H*(Root2+1)),s1]; const V5=[s0+l-H,s1]; const V6=[l,H]; const V7=[s0+l-H,h]; const V8=[l,h]; const V9 = [l,H];
         const V10=[s0+l-(H*0.85*(Root2+1)),h]; const V11=[s0+l-H,h]; const V12=[l,H];const V13 = [s0+l-H*Root2,H]; const F = (H-V2[1])/10; const Cen = [l,H,0] 
